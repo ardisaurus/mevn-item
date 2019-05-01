@@ -13,7 +13,7 @@ $ npm install
 $ npm run dev
 ```
 
-## Install and run the back-end
+## Install and run the front-end
 ```sh
 $ cd mevn-item/client
 $ npm install
