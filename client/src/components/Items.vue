@@ -1,19 +1,32 @@
 <template>
   <div>
-    <h3>Items</h3>
-    <div class="items">
-      <div v-for="item in allItems" :key="item._id" class="item">
-        {{ item.name }}
-        <button @click="deleteItem(item._id)">X</button>
-        <button @click="marking(item._id)">E</button>
-        <div v-if="item._id==markedId">
-          <form @submit="update">
+    <table>
+      <caption>Items</caption>
+      <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in allItems" :key="item._id">
+          <td scope="row">{{ item._id }}</td>
+          <td v-if="item._id!=markedId">{{ item.name }}</td>
+          <td v-if="item._id==markedId">
             <input type="text" name="name" v-model="newData">
-            <input type="submit" value="Submit">
-          </form>
-        </div>
-      </div>
-    </div>
+          </td>
+          <td v-if="item._id!=markedId">
+            <button @click="deleteItem(item._id)">Delete</button>
+            <button @click="marking(item._id, item.name)">Edit</button>
+          </td>
+          <td v-if="item._id==markedId">
+            <button @click="update">Save</button>
+            <button @click="marking(item._id, item.name)">Cancel</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -29,12 +42,13 @@ export default {
   },
   methods: {
     ...mapActions(["fetchItems", "deleteItem", "updateItem"]),
-    marking(_id) {
+    marking(_id, name) {
       if (this.markedId == _id) {
         this.markedId = "";
+        this.newData = "";
       } else {
         this.markedId = _id;
-        this.newData = "";
+        this.newData = name;
       }
     },
     update(e) {
@@ -56,22 +70,37 @@ export default {
 </script>
 
 <style scoped>
-.items {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
+table {
+  width: 100%;
+  margin: 10px auto;
 }
-.item {
-  border: 1px solid #ccc;
+
+caption {
+  font-size: 1.6em;
+  font-weight: 400;
+  padding: 10px 0;
+}
+
+thead th {
+  font-weight: 400;
   background: #41b883;
-  padding: 1rem;
-  border-radius: 5px;
-  text-align: center;
-  position: relative;
+  color: #fff;
 }
-@media (max-width: 500px) {
-  .items {
-    grid-template-columns: 1fr;
-  }
+
+tr {
+  background: #f4f7f8;
+  border-bottom: 1px solid #fff;
+  margin-bottom: 5px;
+}
+
+tr:nth-child(even) {
+  background: #e8eeef;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 20px;
+  font-weight: 300;
 }
 </style>
